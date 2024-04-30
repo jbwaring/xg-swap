@@ -18,3 +18,104 @@ This repository is composed of four distinct packages :
 ## Quick Start
 
 All our packages use `poetry` to manage python dependencies and create virtual environments. Install `poetry` using the guide at [https://python-poetry.org/docs/]. Once poetry is installed, navigate to `/demo` and run `poetry install`.
+Finally, run the demo notebook to try XGSwap.
+
+## Using the XGSwap Pass in Qiskit
+
+### Introduction
+
+In this guide, we will walk through how to use the `xg_swap` routing pass in Qiskit. Routing passes are crucial for adapting quantum circuits to the constraints of specific quantum hardware, ensuring that two-qubit gates are applied only between physically connected qubits.
+
+### Prerequisites
+
+Before we begin, ensure that you have installed Qiskit and the Qiskit IBM Provider. You can install these packages using pip if you haven't already:
+
+```bash
+pip install qiskit
+pip install qiskit-ibm-provider
+```
+
+### Step 1: Import Necessary Modules
+
+Start by importing the necessary modules from Qiskit.
+
+```python
+from qiskit import QuantumCircuit, transpile
+from qiskit_ibm_provider import IBMProvider
+```
+
+### Step 2: Create a Quantum Circuit
+
+Create a simple quantum circuit for demonstration. Here, we're using a circuit with 10 qubits where a controlled-X (CX) gate is applied between the first and the last qubit.
+
+```python
+circuit = QuantumCircuit(10)
+circuit.cx(0, 9)
+circuit.draw()
+```
+
+### Step 3: Set Up IBM Quantum Provider
+
+Set up the IBM Quantum provider to access IBM's quantum systems. You'll need an IBM Quantum account for this step.
+
+```python
+provider = IBMProvider()
+backend = provider.get_backend('ibm_quebec')  # Specify the backend
+```
+
+### Step 4: List Available Routing Methods
+
+Before using `xg_swap`, it's useful to check what routing methods are available. You can list all available routing methods with the following command:
+
+```python
+from qiskit.transpiler.preset_passmanagers.plugin import passmanager_stage_plugins
+passmanager_stage_plugins(stage='routing')
+```
+
+### Step 5: Transpile the Circuit Using xg_swap
+
+Now, transpile your circuit using the `xg_swap` routing method. This method uses gradient boosting ML techniques to find an optimal path for routing gates in quantum circuits on devices with limited qubit connectivity.
+
+```python
+transpiled_circuit = transpile(
+    circuits=circuit,
+    backend=backend,
+    routing_method="xg_swap",
+    initial_layout=[q for q in range(10)]  # Define initial qubit layout
+)
+```
+
+### Conclusion
+
+You have now successfully used the `xg_swap` routing method in Qiskit to adapt a quantum circuit to the topology of IBM's Quebec backend. This method is especially useful for complex circuits on hardware with sparse qubit connectivity.
+
+## Dataset Informations
+
+This dataset contains results from 4,050 experiments conducted on the IBM Quebec quantum computer. Each experiment involves performing full process tomography of a CNOT gate executed along various paths on the device. The dataset records the time each experiment was created, the specific path of qubits used, the fidelity of the operation, and details about the backend, confirming that these are not simulated results.
+
+### Key Metrics:
+
+- **Count of Experiments**: There are 4,050 experiments documented.
+- **Path Length**: The paths vary in length, with the average path involving approximately 53 qubits. The shortest path recorded has 2 qubits, and the longest stretches across 109 qubits.
+
+### Sample Experiment
+
+```json
+{
+	"time_created": "2023-12-13T17:08:52.179124+00:00",
+	"path": [45, 46, 47, 48],
+	"fidelity": 0.8675354057281781,
+	"backend": {
+		"name": "ibm_quebec",
+		"is_simulator": false
+	}
+}
+```
+
+We apply the following method to the dataset to train the gradient boosting model:
+
+![Method Diagram](./training_method.png)
+
+### Training Results
+
+![Training Results](./training_results.png)
