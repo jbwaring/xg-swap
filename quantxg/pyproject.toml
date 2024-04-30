@@ -2,7 +2,7 @@
 name = "quantxg"
 version = "0.1.0"
 description = ""
-authors = ["Jean-Baptiste Waring <jean-baptiste@zetane.com>"]
+authors = ["Jean-Baptiste Waring <j_warin@live.concordia.ca>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
