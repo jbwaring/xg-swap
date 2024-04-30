@@ -119,3 +119,8 @@ We apply the following method to the dataset to train the gradient boosting mode
 ### Training Results
 
 ![Training Results](./training_results.png)
+
+
+# Acknowledgements
+
+We would like to thank PINQ2 for the access to the machine ibm_quebec and the computation time needed for this study. My special thanks to Christophe Pere for his help and support @Christophe-pere [https://github.com/Christophe-pere].
